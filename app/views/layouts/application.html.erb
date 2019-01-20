@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Workspace</title>
+  <title>二手手机交易平台</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <script>
+	window.onload=function(){
+		var notice=document.getElementById("notice").value
+		if(!(typeof notice == "undefined" || notice == null || notice == "")){
+			alert(notice)
+		}
+	}
+  </script>
 </head>
 <body>
     <div class="header">
@@ -47,6 +55,7 @@
             </div>
         </div>
         <div class="rightBox">
+			<input type="hidden" id="notice" value="<%=notice%>" >
             <%=yield%>
         </div>
     </div>
