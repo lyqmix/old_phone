@@ -7,11 +7,17 @@ class Order < ActiveRecord::Base
     
     def add_items_from_cart(cart) 
         cart.items.each do |item|
+            items<<item
+        end
+    end
+    
+    def change_items(cart)
+        cart.items.each do |item|
             item.cart_id=nil
             phone=Phone.find(item.phone_id)
             phone.number=0
             phone.save
-            items<<item
+            item.save
         end
     end
 end

@@ -37,6 +37,7 @@ class OrdersController < ApplicationController
     @order.user_id=session[:userid]
     respond_to do |format|
       if @order.save
+        @order.change_items(current_cart)
         Cart.destroy(session[:cart_id])
         session[:cart_id]=nil
         format.html { redirect_to @order, notice: 'Order was successfully created.' }
