@@ -1,5 +1,63 @@
 class PhonesController < ApplicationController
   before_action :set_phone, only: [:show, :edit, :update, :destroy]
+  
+    def extract_feature(phone)
+        if phone.price<1000
+            return 0
+        elsif phone.price>=7000
+            return 7
+        else
+            return phone.price.to_s[0].to_i
+        end
+    end
+    
+    def recommender_system(candidates)
+      historys=get_historys
+  		if historys.nil? || historys.empty?
+			  return candidates
+		  end
+		  if candidates.nil? || candidates.empty?
+			  return candidates
+			end
+        similarities={}
+        historys_prices=[]
+        for history in historys
+            historys_prices.push(extract_feature(history))
+        end
+        for candidate in candidates
+            similarity=999999
+            price=extract_feature(candidate)
+            for index in 0...historys_prices.length
+                temp=(historys_prices[index]-price)**2
+                if historys[index].brand!=candidate.brand
+                    temp+=1
+                end
+                temp=temp**(1.0/2)
+                if temp<similarity
+                    similarity=temp
+                    similarities[candidate]=similarity
+                end
+            end
+        end
+        similarities=similarities.sort_by{|key,value| value}
+        results=[]
+        similarities.each do |phone|
+            results.push(phone[0])
+        end
+        return results
+    end
+    
+  
+  def get_historys
+    orders=Order.where(user_id:session[:userid])
+    historys=[]
+    orders.each do |order|
+      order.items.each do |item|
+        historys.push(item.phone)
+      end
+    end
+    return historys
+  end
 
   # GET /phones
   # GET /phones.json
@@ -18,6 +76,7 @@ class PhonesController < ApplicationController
     if @brand.empty? and @price.empty?
       if session[:userid]
         @phones=Phone.where.not(user_id:session[:userid]).where.not(rubbish:1).where.not(number:0)
+        @phones=recommender_system(@phones)
       else
         @phones=Phone.where.not(rubbish:1).where.not(number:0)
       end
@@ -33,12 +92,14 @@ class PhonesController < ApplicationController
       end
       if session[:userid]
         @phones=Phone.where(:price=>s..b).where.not(user_id:session[:userid]).where.not(rubbish:1).where.not(number:0)
+        @phones=recommender_system(@phones)
       else
         @phones=Phone.where(:price=>s..b).where.not(rubbish:1).where.not(number:0)
       end
     elsif @price.empty?
       if session[:userid]
         @phones=Phone.where(:brand=>@brand).where.not(user_id:session[:userid]).where.not(rubbish:1).where.not(number:0)
+        @phones=recommender_system(@phones)
       else
         @phones=Phone.where(:brand=>@brand).where.not(rubbish:1).where.not(number:0)
       end
@@ -54,6 +115,7 @@ class PhonesController < ApplicationController
       end
       if session[:userid]
         @phones=Phone.where(:brand=>@brand,:price=>s..b).where.not(user_id:session[:userid]).where.not(rubbish:1).where.not(number:0)
+        @phones=recommender_system(@phones)
       else
         @phones=Phone.where(:brand=>@brand,:price=>s..b).where.not(rubbish:1).where.not(number:0)
       end
