@@ -24,6 +24,7 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
+    #注册
     @user = User.new(user_params)
 
     respond_to do |format|
@@ -65,10 +66,12 @@ class UsersController < ApplicationController
   def 
   
   def login
+    #显示登录界面
     
   end
   
   def clogin
+    #处理登录信息
     if params[:name] and params[:key_word]
       user=User.find_by(name:params[:name])
       if user and user.password==params[:key_word]
@@ -84,6 +87,7 @@ class UsersController < ApplicationController
   end
   
   def logout
+    #退出登录
     session[:user]=nil
     session[:userid]=nil
     session[:cart_id]=nil
@@ -91,6 +95,7 @@ class UsersController < ApplicationController
   end
   
   def info
+    #显示平台信息
     
   end
   

@@ -32,6 +32,7 @@ class OrdersController < ApplicationController
   # POST /orders
   # POST /orders.json
   def create
+    #创建订单
     @order = Order.new(order_params)
     @order.add_items_from_cart(current_cart)
     @order.user_id=session[:userid]

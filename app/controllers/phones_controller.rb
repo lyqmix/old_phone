@@ -1,6 +1,7 @@
 class PhonesController < ApplicationController
   before_action :set_phone, only: [:show, :edit, :update, :destroy]
   
+    #提取特征
     def extract_feature(phone)
         if phone.price<1000
             return 0
@@ -11,6 +12,7 @@ class PhonesController < ApplicationController
         end
     end
     
+    #推荐系统 使用最近邻算法 根据品牌价格计算相似度
     def recommender_system(candidates)
       historys=get_historys
   		if historys.nil? || historys.empty?
@@ -47,7 +49,7 @@ class PhonesController < ApplicationController
         return results
     end
     
-  
+  #获取历史订单数据
   def get_historys
     orders=Order.where(user_id:session[:userid])
     historys=[]
@@ -61,6 +63,7 @@ class PhonesController < ApplicationController
 
   # GET /phones
   # GET /phones.json
+  #向用户展示手机信息，加入了推荐系统
   def index
     @phone=Phone.new
     begin
@@ -145,7 +148,7 @@ class PhonesController < ApplicationController
   end
   
   def my
-    
+    #显示用户自己发布的手机
     @phones=Phone.where(user_id:session[:userid],rubbish:0)
   end
 
@@ -183,6 +186,7 @@ class PhonesController < ApplicationController
   # DELETE /phones/1
   # DELETE /phones/1.json
   def destroy
+    #删除手机
     if @phone.number==1
       @phone.destroy
     else

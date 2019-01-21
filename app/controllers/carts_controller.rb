@@ -10,6 +10,7 @@ class CartsController < ApplicationController
   # GET /carts/1
   # GET /carts/1.json
   def show
+    #展示购物车信息
     if session[:cart_id]
       cart=Cart.find(session[:cart_id])
       items=cart.items
@@ -64,6 +65,7 @@ class CartsController < ApplicationController
   # DELETE /carts/1
   # DELETE /carts/1.json
   def destroy
+    #移除购物车中某一项
     phone_id=params[:id]
     item=Item.where("phone_id = ? and cart_id = ?", phone_id,session[:cart_id]).take
     item.destroy
