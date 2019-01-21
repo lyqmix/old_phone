@@ -63,10 +63,10 @@ class PhonesController < ApplicationController
   # GET /phones/1
   # GET /phones/1.json
   def show
-    if not session[:user]
-      redirect_to {controller:'users',action:"login"}
-    else
-    end
+    #if not session[:user]
+    #  redirect_to {controller:'users',action:"login"}
+    #else
+    #end
   end
 
   # GET /phones/new
@@ -109,7 +109,7 @@ class PhonesController < ApplicationController
   def update
     respond_to do |format|
       if @phone.update(phone_params)
-        format.html { redirect_to @phone, notice: 'Phone was successfully updated.' }
+        format.html { redirect_to @phone, notice: '修改手机信息成功' }
         format.json { render :show, status: :ok, location: @phone }
       else
         format.html { render :edit }

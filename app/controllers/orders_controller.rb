@@ -40,7 +40,7 @@ class OrdersController < ApplicationController
         @order.change_items(current_cart)
         Cart.destroy(session[:cart_id])
         session[:cart_id]=nil
-        format.html { redirect_to @order, notice: 'Order was successfully created.' }
+        format.html { redirect_to @order, notice: '交易成功，等待发货' }
         format.json { render :show, status: :created, location: @order }
       else
         format.html { render :new }
